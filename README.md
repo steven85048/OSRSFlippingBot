@@ -5,7 +5,7 @@
 ### VM Config
 
 - VM Arguments:
-  -Djava.search.path=out
+  - -Djava.search.path=out
   -Dsun.java2d.nodraw=true
   -Dcom.jagex.config=http://oldschool.runescape.com/l=en/jav_config.ws
   -Xmx512m
