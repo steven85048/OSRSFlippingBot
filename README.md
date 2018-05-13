@@ -16,8 +16,8 @@
   -XX:+UseParNewGC
   -javaagent: PATH_TO\RSBot-7070.jar
  
- Program Arguments: runescape
+ - Program Arguments: runescape
  
- Dependencies:
+ - Dependencies:
   - jagexappletviewer.jar (Available through OSRS website)
   - RSBot-7070.jar (Available through Powerbot website)
