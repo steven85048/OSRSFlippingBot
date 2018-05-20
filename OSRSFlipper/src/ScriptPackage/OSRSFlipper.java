@@ -14,49 +14,34 @@ import org.powerbot.script.rt4.Npc;
 import org.powerbot.script.rt4.TilePath;
 
 @Script.Manifest(
-		name = "Chopping",
-		description = "Basic Script Example"
+		name = "GeExchange",
+		description = "Flipping Bot"
 )
 public class OSRSFlipper extends PollingScript<ClientContext>{
-    private final String BOX_NAME = "Bank deposit box";
-    private double nextDist = 1 + Math.random() * 3;
-    private TilePath pathToBank;
+    GrandExchange ge;
+    boolean hasBought = false;
 	
 	private List<Task> taskList = new ArrayList<Task>();
 		
 	@Override
 	public void start() {
-		
+		ge = new GrandExchange(ctx);
 	}
 	
 	@Override
 	public void poll() {
+		ge.open();
 		
-		System.out.println(ctx.npcs.select().name("Chicken").nearest().poll().tile());
-		
-		if(pathToBank == null)          
-            pathToBank = ctx.movement.newTilePath(ctx.npcs.select().name("Chicken").nearest().poll().tile());
-        nextDist = 1 + Math.random() * 3;
-        pathToBank.traverse();
-        Condition.wait(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-            return (ctx.players.local().inMotion());
-        }}, 500, 10);
-		
-		/**
-		if (ctx.players.local().animation() == -1){
-			Npc obj = ctx.npcs.select().name("Chicken").nearest().poll();
-			obj.interact("Attack");
-		}*/
-		
-		/**
-		for (Task task: taskList) {
-			if (task.activate()) {
-				task.execute();
+		if (!hasBought){
+			System.out.println("buying");
+			try {
+			ge.buy(1925	, 1, 60);
+			} catch(Exception e){
+				e.printStackTrace();
 			}
+			hasBought = true;
 		}
-		*/
+		
 	}
 	
 	@Override
