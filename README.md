@@ -23,3 +23,5 @@
  - Dependencies:
     - jagexappletviewer.jar (Available through OSRS website)
     - RSBot-7070.jar (Available through Powerbot website)
+
+- Test account: h1210004@nwytg.com
