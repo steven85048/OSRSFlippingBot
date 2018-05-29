@@ -36,10 +36,12 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 	@Override
 	public void start() {
 		commandList = new LinkedList<Command>();
-		
+		 
 		// get singleton instance of generator and add context
 		generator = CommandGenerator.getInstance();
-		generator.addContext(ctx);
+		generator.addContext(ctx, commandList);
+		
+		generator.addCommand(0);
 	}
 	
 	// Method that will be continuously called for this client

@@ -27,6 +27,11 @@ public class CommandGenerator {
 	// PUBLIC FUNCTIONS
 	// ===========================================================================
 	
+	public CommandGenerator() {
+		contexts = new ArrayList<ContextContainer>();
+		commandLists = new ArrayList<Queue<Command>>();
+	}
+	
 	public static CommandGenerator getInstance() {
 		if (generator == null)
 			generator = new CommandGenerator();
@@ -34,12 +39,19 @@ public class CommandGenerator {
 		return generator;
 	}
 	
-	public void addContext(ClientContext ctx) {
+	public void addContext(ClientContext ctx, Queue<Command> commandList) { 
 		ContextContainer newContainer = new ContextContainer(ctx);
 		contexts.add(newContainer);
+		commandLists.add(commandList);
 	}
 	
 	public void addCommand(int clientIndex) {
+		ContextContainer aContainer = contexts.get(clientIndex);
+		Queue<Command> aCommandList = commandLists.get(clientIndex);
 		
+		// For now lets just add one buy command
+		Command buyCommand = new Buy(1, 554, 50, aContainer);
+		
+		aCommandList.add(buyCommand);
 	}
 }
