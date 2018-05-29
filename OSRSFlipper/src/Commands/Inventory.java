@@ -27,16 +27,28 @@ public class Inventory extends ClientAccessor{
 	
 	// Get the current gold count in inventory
 	public int getGoldCount() {
-		Item[] items = ctx.inventory.items();
+		Item goldStack = getItemById(GOLD_ID);
 		
-		for (int i = 0 ; i < items.length; i++){
-			if (items[i].id() == GOLD_ID){
-				return items[i].stackSize();
-			}
-		}
+		// check if there is gold
+		if (goldStack != null) {
+			return goldStack.stackSize();
+		} 
 		
-		// return error return
+		// else error return
 		return -1;
 	}
 	
+	
+	// Get the item by id
+	public Item getItemById(int id) {		
+		Item[] items = ctx.inventory.items();
+		
+		for (int i = 0 ; i < items.length; i++) {
+			if (items[i].id() == id) {
+				return items[i];
+			}
+		}
+		
+		return null;
+	}
 }

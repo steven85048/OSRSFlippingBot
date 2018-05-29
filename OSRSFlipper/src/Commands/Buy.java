@@ -1,6 +1,6 @@
 package Commands;
 
-public class Buy implements Command {
+public class Buy extends TradeCommand implements Command {
 
 	// ===========================================================================
 	// INSTANCE VARIABLES
@@ -9,15 +9,13 @@ public class Buy implements Command {
 	private int itemQuantity;
 	private int itemId;
 	private int itemPrice;
-	
-	private GrandExchange ge;
-	
+		
 	public Buy(int aItemQuantity, int aItemId, int aItemPrice, ContextContainer container) {
+		super(container);
+		
 		itemQuantity = aItemQuantity;
 		itemId = aItemId;
-		itemPrice = aItemPrice;
-		
-		ge = container.getGE();
+		itemPrice = aItemPrice;	
 	}
 	
 	@Override

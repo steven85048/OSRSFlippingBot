@@ -1,5 +1,7 @@
 package Commands;
 
+import org.powerbot.script.rt4.ClientContext;
+
 /*
  * Default functions all commands must have
  */

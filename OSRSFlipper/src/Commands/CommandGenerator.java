@@ -42,7 +42,7 @@ public class CommandGenerator {
 	public void addContext(ClientContext ctx, Queue<Command> commandList) { 
 		ContextContainer newContainer = new ContextContainer(ctx);
 		contexts.add(newContainer);
-		commandLists.add(commandList);
+		commandLists.add(commandList); 
 	}
 	
 	public void addCommand(int clientIndex) {
@@ -50,10 +50,10 @@ public class CommandGenerator {
 		Queue<Command> aCommandList = commandLists.get(clientIndex);
 		
 		// For now lets just add one buy command
-		Command buyCommand = new Buy(1, 554, 50, aContainer);
-		Command buyCommand2 = new Buy(1, 554, 50, aContainer);
+		//Command buyCommand = new Buy(1, 554, 50, aContainer);
+		Command buyCommand2 = new Sell(554, 1, 3, aContainer);
 		
-		aCommandList.add(buyCommand);
+		//aCommandList.add(buyCommand);
 		aCommandList.add(buyCommand2);
 	}
 }
