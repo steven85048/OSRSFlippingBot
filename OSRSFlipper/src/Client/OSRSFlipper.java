@@ -12,6 +12,8 @@ import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt4.ClientContext;
 
+import Commands.GrandExchange;
+
 @Script.Manifest(
 		name = "GeExchange",
 		description = "Flipping Bot"
@@ -22,9 +24,6 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 // INSTANCE VARIABLES
 // ===========================================================================
 	
-    private GrandExchange ge;
-    private Inventory inv;
-	
 	private Queue<String> commandList = new LinkedList<String>();
 		
 // ===========================================================================
@@ -34,8 +33,7 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 	// Initialize the worker classes that will be used within the tasks
 	@Override
 	public void start() {
-		ge = new GrandExchange(ctx);
-		inv = new Inventory(ctx);
+
 	}
 	
 	// Method that will be continuously called for this client

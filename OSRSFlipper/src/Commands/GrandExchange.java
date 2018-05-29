@@ -1,4 +1,4 @@
-package Client;
+package Commands;
 
 import java.util.*;
 import java.util.concurrent.Callable;

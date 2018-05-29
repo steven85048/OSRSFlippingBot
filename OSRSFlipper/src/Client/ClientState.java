@@ -1,11 +1,20 @@
 package Client;
 
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.powerbot.script.rt4.Item;
 
 public class ClientState {
 	
-	// Hashmap that contains the current state of the client
-	private HashMap<String, Object> clientState = new HashMap<String, Object>();
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	private int goldCount;
+	private Item[] inventory;
+	private Queue<String> commandList = new LinkedList<String>();
+	private int emptySlots;
 	
 	public ClientState() {
 		
