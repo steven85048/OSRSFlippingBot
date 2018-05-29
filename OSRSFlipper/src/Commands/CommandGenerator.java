@@ -1,10 +1,9 @@
 package Commands;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 import org.powerbot.script.rt4.ClientContext;
-
-import Client.ClientState;
 
 /*
  * Singleton class that updates the commands for the client(s). The actual
@@ -22,6 +21,7 @@ public class CommandGenerator {
 	
 	// list of contexts (may be refactored to hashmap of client ID : obj in future)
 	private ArrayList<ContextContainer> contexts;
+	private ArrayList<Queue<Command>> commandLists;
 	
 	// ===========================================================================
 	// PUBLIC FUNCTIONS
@@ -34,8 +34,12 @@ public class CommandGenerator {
 		return generator;
 	}
 	
-	public void addContext(ClientContext ctx, ClientState state) {
-		ContextContainer newContainer = new ContextContainer(ctx, state);
+	public void addContext(ClientContext ctx) {
+		ContextContainer newContainer = new ContextContainer(ctx);
 		contexts.add(newContainer);
+	}
+	
+	public void addCommand(int clientIndex) {
+		
 	}
 }

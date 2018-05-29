@@ -1,33 +1,46 @@
 package Client;
 
-import java.util.LinkedList;
-import java.util.Queue;
+/*
+ * Class that contains and updates the current user state
+ */
 
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
 
-public class ClientState {
+import Commands.Inventory;
+
+public class ClientState extends ClientAccessor{
 	
 	// ===========================================================================
 	// INSTANCE VARIABLES
 	// ===========================================================================
 	
+	private Inventory inv;
+	
 	private int goldCount;
 	private Item[] inventory;
-	private Queue<String> commandList = new LinkedList<String>();
 	private int emptySlots;
 	
-	public ClientState() {
+	public ClientState(ClientContext ctx, Inventory inv) {
+		super(ctx);
 		
+		this.inv = inv;
 	}
 	
 	// SETTERS for the client state
 	
 	public void updateClientState() {
-		
+		setGoldCount();
+		setItems();
 	}
 	
 	public void setGoldCount(){
-		
+		this.goldCount = inv.getGoldCount();
+	}
+	
+	public void setItems() {
+		this.inventory = inv.getItems();
 	}
 	
 	

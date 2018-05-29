@@ -2,7 +2,7 @@ package Client;
 
 /*
  * Main Client Container - Receives commands from the CommandGenerator and runs them sequentially
- * in the poll method.
+ * in the poll method. Does not directly handle the context!
  */
 
 import java.util.LinkedList;
@@ -12,7 +12,8 @@ import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt4.ClientContext;
 
-import Commands.GrandExchange;
+import Commands.Command;
+import Commands.CommandGenerator;
 
 @Script.Manifest(
 		name = "GeExchange",
@@ -23,8 +24,9 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 // ===========================================================================
 // INSTANCE VARIABLES
 // ===========================================================================
-	
-	private Queue<String> commandList = new LinkedList<String>();
+
+	private CommandGenerator generator;
+	private Queue<Command> commandList;
 		
 // ===========================================================================
 // MAIN FUNCTIONS
@@ -33,13 +35,19 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 	// Initialize the worker classes that will be used within the tasks
 	@Override
 	public void start() {
-
+		commandList = new LinkedList<Command>();
+		
+		// get singleton instance of generator and add context
+		generator = CommandGenerator.getInstance();
+		generator.addContext(ctx);
 	}
 	
 	// Method that will be continuously called for this client
 	@Override
 	public void poll() {
-
+		if (!commandList.isEmpty() && commandList.peek().isRunnable()){
+			commandList.poll().command();
+		}
 	}
 	
 	// Cleanup method to deallocate resources

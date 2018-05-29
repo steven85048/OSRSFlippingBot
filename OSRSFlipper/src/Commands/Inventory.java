@@ -1,4 +1,4 @@
-package Client;
+package Commands;
 
 /*
  * Contains methods relevant to the handling of the user's inventory.

@@ -18,4 +18,9 @@ public class Buy implements Command {
 	public void command() {
 		
 	}
+
+	@Override
+	public boolean isRunnable() {
+		return false;
+	}
 }

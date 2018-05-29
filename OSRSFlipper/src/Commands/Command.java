@@ -11,4 +11,5 @@ public interface Command {
 	
 	public void command();
 	
+	public boolean isRunnable();
 }

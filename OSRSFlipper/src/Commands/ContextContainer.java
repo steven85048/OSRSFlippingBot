@@ -3,7 +3,6 @@ package Commands;
 import org.powerbot.script.rt4.ClientContext;
 
 import Client.ClientState;
-import Client.Inventory;
 
 public class ContextContainer {
 	// ===========================================================================
@@ -13,18 +12,21 @@ public class ContextContainer {
 	ClientContext ctx;
 	GrandExchange ge;
 	Inventory inv;
-	
 	ClientState clientState;
 	
 	// ===========================================================================
 	// MAIN FUNCTIONS
 	// ===========================================================================
 	
-	public ContextContainer(ClientContext ctx, ClientState state) {
+	public ContextContainer(ClientContext ctx) {
+		// Initialize client specific functionality
 		this.ctx = ctx;
 		ge = new GrandExchange(ctx);
 		inv = new Inventory(ctx);
-		clientState = state;
+		clientState = new ClientState(ctx, inv);
+		
+		// Get initial client state
+		clientState.updateClientState();
 	}
 	
 	public ClientContext getContext() {
