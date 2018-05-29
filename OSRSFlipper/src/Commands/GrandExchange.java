@@ -107,14 +107,14 @@ public class GrandExchange extends ClientAccessor {
 		List<Component> avail = getVacantSlots();
 		if(avail.isEmpty())
 			return false;
-				
-		// click on one of the slots
-		avail.get(0).component(BUY_COMPONENT)
-			.click();
 		
 		// verify that the search widget is open
 		if(!Condition.wait(new Callable<Boolean>() {
 			public Boolean call() {
+				// click on one of the slots
+				avail.get(0).component(BUY_COMPONENT)
+					.click();
+				
 				return ctx.widgets.component(SEARCH_WIDGET, SEARCH_COMPONENT)
 						.visible();
 			}
@@ -264,9 +264,7 @@ public class GrandExchange extends ClientAccessor {
 		return set(""+price, PRICE_INPUT_COMPONENT, PRICE_COMPONENT);
 	}
 	
-	public boolean setQuantity(final int quantity) {
-		System.out.println("setting quantity!");
-		
+	public boolean setQuantity(final int quantity) {		
 		return set(""+quantity, QUANTITY_INPUT_COMPONENT, QUANTITY_COMPONENT);
 	}
 		

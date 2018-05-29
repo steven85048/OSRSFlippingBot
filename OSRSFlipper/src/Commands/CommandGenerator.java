@@ -51,7 +51,9 @@ public class CommandGenerator {
 		
 		// For now lets just add one buy command
 		Command buyCommand = new Buy(1, 554, 50, aContainer);
+		Command buyCommand2 = new Buy(1, 554, 50, aContainer);
 		
 		aCommandList.add(buyCommand);
+		aCommandList.add(buyCommand2);
 	}
 }

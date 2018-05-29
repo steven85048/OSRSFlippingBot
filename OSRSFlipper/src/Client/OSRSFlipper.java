@@ -49,6 +49,13 @@ public class OSRSFlipper extends PollingScript<ClientContext>{
 	public void poll() {
 		if (!commandList.isEmpty() && commandList.peek().isRunnable()){
 			commandList.poll().command();
+			
+			// Wait a bit until next command
+			try {
+				Thread.sleep(500);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
