@@ -1,4 +1,4 @@
-package ScriptPackage;
+package Client;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -14,6 +14,7 @@ import org.powerbot.script.rt4.Game.Crosshair;
  * @author Mooshe
  * Retrived from https://gist.github.com/Moosheplusplus/437e0d287aabac17674183f63c389359
  * 
+ * (Some methods fixed by Steven)
  */
 public class GrandExchange extends ClientAccessor {
 	
@@ -26,7 +27,7 @@ public class GrandExchange extends ClientAccessor {
 	public static final int		SELL_COMPONENT 			= 1;
 	public static final int		INPUT_COMPONENT 		= 24;
 	public static final int		LABEL_COMPONENT 		= 25;
-	public static final int		QUANTITY_INPUT_COMPONENT 	= 32;
+	public static final int		QUANTITY_INPUT_COMPONENT 	= 33;
 	public static final int		QUANTITY_COMPONENT 		= 49;
 	public static final int		PRICE_INPUT_COMPONENT 		= 43;
 	public static final int		PRICE_COMPONENT 		= 52;
@@ -45,11 +46,10 @@ public class GrandExchange extends ClientAccessor {
 		super(ctx);
 	}
 	
-	/**
-	 * Opens the grand exchange widget. 
-	 * 
-	 * @return true if it has successfully opened the grand exchange.
-	 */
+// ===========================================================================
+// MAIN FUNCTIONS
+// ===========================================================================
+	
 	public boolean open() {
 		if(opened())
 			return true;
@@ -72,14 +72,6 @@ public class GrandExchange extends ClientAccessor {
 	}
 	
 	/**
-	 * 
-	 * @return true if the grand exchange widget is open.
-	 */
-	public boolean opened() {
-		return ctx.widgets.widget(WIDGET).valid();
-	}
-	
-	/**
 	 * Closes the grand exchange widget
 	 * 
 	 * @return true if the grand exchange is no longer opened.
@@ -98,7 +90,7 @@ public class GrandExchange extends ClientAccessor {
 			}
 		}, 100, 20);
 	}
-	
+		
 	/**
 	 * Buys an item from the grand exchange.
 	 * 
@@ -111,15 +103,16 @@ public class GrandExchange extends ClientAccessor {
 		if(!opened())
 			return false;
 		
+		// get the count of vacant slots
 		List<Component> avail = getVacantSlots();
 		if(avail.isEmpty())
 			return false;
-		
-		System.out.println(avail.size());
-		
+				
+		// click on one of the slots
 		avail.get(0).component(BUY_COMPONENT)
 			.click();
 		
+		// verify that the search widget is open
 		if(!Condition.wait(new Callable<Boolean>() {
 			public Boolean call() {
 				return ctx.widgets.component(SEARCH_WIDGET, SEARCH_COMPONENT)
@@ -130,12 +123,15 @@ public class GrandExchange extends ClientAccessor {
 			return false;
 		}
 					
+		// load the item name from the cache index
 		final CacheItemConfig cic = CacheItemConfig.load(item);
 		if (!cic.valid())
 			return false;
-				
+			
+		// send that cache name to the client
 		ctx.input.send(cic.name.toLowerCase());
 		
+		// verify that the query component is now open
 		if(!Condition.wait(new Callable<Boolean>() {
 			public Boolean call() {
 				return ctx.widgets.component(SEARCH_WIDGET, QUERY_COMPONENT)
@@ -145,19 +141,14 @@ public class GrandExchange extends ClientAccessor {
 			System.out.println("QUERY SELECT WIDGET FAILED TO OPEN");
 			return false;
 		}
-				
+					
+		// Wait for the query to appear
 		Thread.sleep(500);
-				
+		
+		// Get the query results
 		Component query = ctx.widgets.component(SEARCH_WIDGET, QUERY_COMPONENT);
+		Component[] results = query.components();		
 		
-		System.out.println(query.visible());
-		
-		Component[] results = query.components();
-		
-		System.out.println(query.componentCount());
-		System.out.println("what");
-		
-		results[0].click();
 		
 		int itemID = cic.noted ? item - 1 : item;
 		final CacheItemConfig cicn = CacheItemConfig.load(itemID);
@@ -165,16 +156,14 @@ public class GrandExchange extends ClientAccessor {
 		if(! (cicn.valid() && cicn.name.equals(cic.name)) )
 			itemID = item;
 		
-		for (int i = 0, j = results.length; i < j; i++)
+		for (int i = 0, j = results.length; i < j; i++){			
 			if ((results[i].itemId() == itemID) && results[i - 2].click())
 				break;
-
-		System.out.println("here");
+		}
 		
 		if(!matchesTitle(cic.name))
 			return false;
-				
-		
+						
 		return setQuantity(amount) && setPrice(price) && confirm();
 	}
 	
@@ -190,28 +179,6 @@ public class GrandExchange extends ClientAccessor {
 		return opened() && item.id() != -1 && item.click() && 
 				matchesTitle(item.name()) && 
 				setQuantity(amount) && setPrice(price) && confirm();
-	}
-	
-	/**
-	 * The amount of available slots within the Grand Exchange. Any
-	 * items occupied within a slot will not be counted, or if the slot
-	 * is disabled due to lack of membership.
-	 * 
-	 * @return The amount of vacant slots.
-	 */
-	public int getAvailableSlots() {
-		return getVacantSlots().size();
-	}
-	
-	/**
-	 * Checks whether or not the specified slot is vacant for use.
-	 * 
-	 * @param slot The slot to check is vacant
-	 * @return true if the slot is vacant
-	 */
-	public boolean isVacant(final int slot) {
-		return !ctx.widgets.component(WIDGET, SLOT_OFFSET + slot)
-				.component(PROGRESS_BAR).visible();
 	}
 	
 	/**
@@ -241,6 +208,32 @@ public class GrandExchange extends ClientAccessor {
 		return collect(false);
 	}
 	
+// ===========================================================================
+// HELPER FUNCTIONS
+// ===========================================================================
+	
+	/**
+	 * The amount of available slots within the Grand Exchange. Any
+	 * items occupied within a slot will not be counted, or if the slot
+	 * is disabled due to lack of membership.
+	 * 
+	 * @return The amount of vacant slots.
+	 */
+	public int getAvailableSlots() {
+		return getVacantSlots().size();
+	}
+	
+	/**
+	 * Checks whether or not the specified slot is vacant for use.
+	 * 
+	 * @param slot The slot to check is vacant
+	 * @return true if the slot is vacant
+	 */
+	public boolean isVacant(final int slot) {
+		return !ctx.widgets.component(WIDGET, SLOT_OFFSET + slot)
+				.component(PROGRESS_BAR).visible();
+	}
+	
 	/**
 	 * Collects all items within the grand exchange that are available for
 	 * collection. All of the items will be deposited into the bank.
@@ -250,6 +243,15 @@ public class GrandExchange extends ClientAccessor {
 	public boolean collectToBank() {
 		return collect(true);
 	}
+	
+	/**
+	 * 
+	 * @return true if the grand exchange widget is open.
+	 */
+	public boolean opened() {
+		return ctx.widgets.widget(WIDGET).valid();
+	}
+	
 	
 	private boolean collect(final boolean toBank) {
 		Component collect = ctx.widgets.component(WIDGET, COLLECT_COMPONENT)
@@ -263,6 +265,8 @@ public class GrandExchange extends ClientAccessor {
 	}
 	
 	public boolean setQuantity(final int quantity) {
+		System.out.println("setting quantity!");
+		
 		return set(""+quantity, QUANTITY_INPUT_COMPONENT, QUANTITY_COMPONENT);
 	}
 		
@@ -274,10 +278,11 @@ public class GrandExchange extends ClientAccessor {
 			new Callable<Boolean>() {
 				public Boolean call() {
 					return ctx.widgets.component(SEARCH_WIDGET,
-							SEARCH_LABEL_COMPONENT).visible();
+							SEARCH_COMPONENT).visible();
 				}
 			}, 100, 25))
 				return false;
+				
 		return ctx.input.sendln(value);
 	}
 	
