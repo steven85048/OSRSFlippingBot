@@ -1,0 +1,25 @@
+package Utility;
+
+
+public class TradingMutex {
+	private int mutex;
+	
+	public TradingMutex(){
+		mutex = 1;
+	}
+	
+	// Blocks or consumes resources
+	public boolean P() {
+		if (mutex > 0){
+			mutex--;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	// Frees up resources
+	public void V() {
+		mutex++;
+	}
+}

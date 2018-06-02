@@ -32,6 +32,7 @@ public class CommandGenerator {
 		commandLists = new ArrayList<Queue<Command>>();
 	}
 	
+	// Singleton method
 	public static CommandGenerator getInstance() {
 		if (generator == null)
 			generator = new CommandGenerator();
@@ -39,21 +40,33 @@ public class CommandGenerator {
 		return generator;
 	}
 	
+	// registers a new client to the commandgenerator
 	public void addContext(ClientContext ctx, Queue<Command> commandList) { 
 		ContextContainer newContainer = new ContextContainer(ctx);
 		contexts.add(newContainer);
 		commandLists.add(commandList); 
 	}
 	
-	public void addCommand(int clientIndex) {
+	// updates the current client state
+	public void updateClientState(int clientIndex) {
 		ContextContainer aContainer = contexts.get(clientIndex);
+		aContainer.getClientState().updateClientState();
+	}
+	
+	public void addCommand(int clientIndex) {
+		// Get which user context to send the command to 
+		ContextContainer aContainer = contexts.get(clientIndex);
+		
+		// Get the command queue for that client
 		Queue<Command> aCommandList = commandLists.get(clientIndex);
 		
 		// For now lets just add one buy command
-		//Command buyCommand = new Buy(1, 554, 50, aContainer);
-		Command buyCommand2 = new Sell(554, 1, 3, aContainer);
-		
-		//aCommandList.add(buyCommand);
-		aCommandList.add(buyCommand2);
+		for (int i = 0 ; i < 30; i++){
+			Command buyCommand = new Buy(1, 1925, 100, aContainer);
+			Command buyCommand2 = new Sell(1, 1925, 3, aContainer);
+			
+			aCommandList.add(buyCommand);
+			aCommandList.add(buyCommand2);
+		}
 	}
 }

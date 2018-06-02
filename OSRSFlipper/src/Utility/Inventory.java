@@ -1,4 +1,4 @@
-package Commands;
+package Utility;
 
 /*
  * Contains methods relevant to the handling of the user's inventory.

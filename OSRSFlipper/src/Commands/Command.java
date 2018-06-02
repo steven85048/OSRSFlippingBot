@@ -11,7 +11,7 @@ public interface Command {
 	// INSTANCE VARIABLES
 	// ===========================================================================
 	
-	public void command();
+	public boolean command();
 	
 	public boolean isRunnable();
 }

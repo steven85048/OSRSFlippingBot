@@ -8,8 +8,8 @@ public class Sell extends TradeCommand implements Command {
 	private int itemQuantity;
 	private int itemPrice;
 	private int itemId = -1;
-	
-	public Sell(Item aItem, int aItemQuantity, int aItemPrice, ContextContainer container) {
+		
+	public Sell(int aItemQuantity, Item aItem, int aItemPrice, ContextContainer container) {
 		super(container);
 		
 		item = aItem;
@@ -17,7 +17,7 @@ public class Sell extends TradeCommand implements Command {
 		itemPrice = aItemPrice;
 	}
 	
-	public Sell(int itemID, int aItemQuantity, int aItemPrice, ContextContainer container) {
+	public Sell(int aItemQuantity, int itemID, int aItemPrice, ContextContainer container) {
 		super(container);
 		
 		itemQuantity = aItemQuantity;
@@ -26,19 +26,25 @@ public class Sell extends TradeCommand implements Command {
 	}
 	
 	@Override
-	public void command() {
+	public boolean command() {
 		if (itemId != -1)
 			item = inv.getItemById(itemId);
 		
 		if (item == null) {
 			System.out.println("Item is invalid for selling");
+			return false;
 		} else {
-			ge.sell(item, itemQuantity, itemPrice);
+			return ge.sell(item, itemQuantity, itemPrice);
 		}
 	}
 
 	@Override
 	public boolean isRunnable() {
+		if (container.getClientState().getEmptySlots() <= 0) {
+			System.out.println("COMMAND_ERR: Not enough slots");
+			return false;
+		}
+		
 		return true;
 	}
 }

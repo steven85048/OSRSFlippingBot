@@ -3,6 +3,8 @@ package Commands;
 import org.powerbot.script.rt4.ClientContext;
 
 import Client.ClientState;
+import Utility.GrandExchange;
+import Utility.Inventory;
 
 public class ContextContainer {
 	// ===========================================================================
@@ -23,7 +25,7 @@ public class ContextContainer {
 		this.ctx = ctx;
 		ge = new GrandExchange(ctx);
 		inv = new Inventory(ctx);
-		clientState = new ClientState(ctx, inv);
+		clientState = new ClientState(ctx, inv, ge);
 		
 		// Get initial client state
 		clientState.updateClientState();
