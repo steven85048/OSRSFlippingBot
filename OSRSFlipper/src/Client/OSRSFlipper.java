@@ -14,6 +14,8 @@ import org.powerbot.script.rt4.ClientContext;
 
 import Commands.Command;
 import Commands.CommandGenerator;
+import Commands.ContextContainer;
+import DefaultActions.DefaultCommand;
 
 @Script.Manifest(name = "GeExchange", description = "Flipping Bot")
 public class OSRSFlipper extends PollingScript<ClientContext> {
@@ -25,6 +27,8 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 	private CommandGenerator generator;
 	private Queue<Command> commandList;
 	private DefaultCommand defaultCommand;
+	private ContextContainer contextContainer;
+	private ClientState clientState;
 	
 	private int id;
 
@@ -40,10 +44,17 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 		
 		// queue for commands
 		commandList = new LinkedList<Command>();
-
+		
+		// create the context container
+		contextContainer = new ContextContainer(ctx);
+		
+		// Create client State
+		clientState = new ClientState(ctx, contextContainer.getInv(), contextContainer.getGE());
+		contextContainer.setClientState(clientState);
+		
 		// get singleton instance of generator and add context
 		generator = CommandGenerator.getInstance();
-		generator.addContext(ctx, commandList);
+		generator.addContext(contextContainer, commandList);
 
 		// Default command init
 		defaultCommand = new DefaultCommand(ctx);
@@ -55,7 +66,7 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 	@Override
 	public void poll() {
 		// start by updating the client state
-		generator.updateClientState(id);
+		clientState.updateClientState();
 
 		// always prioritize running commands
 		if (!commandList.isEmpty() && commandList.peek().isRunnable()) {
@@ -63,7 +74,7 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 
 			// Wait a bit until next command
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1000);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

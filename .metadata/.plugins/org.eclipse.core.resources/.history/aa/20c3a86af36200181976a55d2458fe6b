@@ -1,0 +1,24 @@
+package Commands;
+
+/*
+ * Singleton class that updates the commands for the client(s). The actual
+ * logic for the updating is performed in the CommandUpdater.
+ */
+
+public class CommandGenerator {
+	
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+
+	private static CommandGenerator generator;
+	
+	private ArrayList<ClientContext> contexts;
+	
+	public static CommandGenerator getInstance() {
+		if (generator == null)
+			generator = new CommandGenerator();
+		
+		return generator;
+	}
+}

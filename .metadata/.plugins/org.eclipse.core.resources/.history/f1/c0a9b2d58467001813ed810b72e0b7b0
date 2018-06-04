@@ -1,0 +1,10 @@
+package DefaultActions;
+
+import Commands.ContextContainer;
+import Commands.TradeCommand;
+
+public class TransactionAcceptor extends TradeCommand {
+	public TransactionAcceptor(ContextContainer contextContainer) {
+		super(contextContainer);
+	}
+}

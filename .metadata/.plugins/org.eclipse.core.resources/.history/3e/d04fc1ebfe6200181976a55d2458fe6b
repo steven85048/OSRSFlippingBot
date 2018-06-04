@@ -1,0 +1,43 @@
+package Commands;
+
+import org.powerbot.script.rt4.Item;
+
+public class Sell implements Command {
+
+	private Item item;
+	private int itemQuantity;
+	private int itemPrice;
+	private int itemId = -1;
+	
+	private GrandExchange ge;
+	private Inventory inv;
+	
+	public Sell(Item aItem, int aItemQuantity, int aItemPrice, ContextContainer container) {
+		item = aItem;
+		itemQuantity = aItemQuantity;
+		itemPrice = aItemPrice;
+		
+		ge = container.getGE();
+		inv = container.getInv();
+	}
+	
+	public Sell(int itemID, int aItemQuantity, int aItemPrice, ContextContainer container) {
+		itemQuantity = aItemQuantity;
+		itemPrice = aItemPrice;
+		this.itemId = itemID;
+		
+		ge = container.getGE();
+	}
+	
+	@Override
+	public void command() {
+		if (itemId != -1){
+			ge.sell(item, itemQuantity, itemPrice);
+		}
+	}
+
+	@Override
+	public boolean isRunnable() {
+		return true;
+	}
+}

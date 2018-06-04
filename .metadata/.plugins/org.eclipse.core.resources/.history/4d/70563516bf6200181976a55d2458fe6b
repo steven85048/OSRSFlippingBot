@@ -1,0 +1,54 @@
+package ScriptPackage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import org.powerbot.script.Condition;
+import org.powerbot.script.PollingScript;
+import org.powerbot.script.Script;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.GameObject;
+import org.powerbot.script.rt4.Item;
+import org.powerbot.script.rt4.Npc;
+import org.powerbot.script.rt4.TilePath;
+
+@Script.Manifest(
+		name = "GeExchange",
+		description = "Flipping Bot"
+)
+public class OSRSFlipper extends PollingScript<ClientContext>{
+	
+// ===========================================================================
+// INSTANCE VARIABLES
+// ===========================================================================
+	
+    private GrandExchange ge;
+    private Inventory inv;
+	
+	private Queue<String> = new LinkedList<String>();
+		
+// ===========================================================================
+// MAIN FUNCTIONS
+// ===========================================================================
+	
+	// Initialize the worker classes that will be used within the tasks
+	@Override
+	public void start() {
+		ge = new GrandExchange(ctx);
+		inv = new Inventory(ctx);
+	}
+	
+	// Method that will be continuously called for this client
+	@Override
+	public void poll() {
+		
+	}
+	
+	// Cleanup method to deallocate resources
+	@Override
+	public void stop() {
+
+	}
+}

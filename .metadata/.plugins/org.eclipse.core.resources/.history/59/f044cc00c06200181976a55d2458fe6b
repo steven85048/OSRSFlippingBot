@@ -1,0 +1,26 @@
+package ScriptPackage;
+
+/*
+ * Contains methods relevant to the handling of the user's inventory.
+ */
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Item;
+
+public class Inventory extends ClientAccessor{
+
+	public Inventory(ClientContext ctx) {
+		super(ctx);
+	}
+	
+	// ===========================================================================
+	// MAIN FUNCTIONS
+	// ===========================================================================
+		
+	// Get all items currently in inventory
+	public Item[] getItems() {
+		return ctx.inventory.items();
+	}
+	
+}

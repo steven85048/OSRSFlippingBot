@@ -1,5 +1,6 @@
 package Commands;
 
+import Client.ClientState;
 import Utility.GrandExchange;
 import Utility.Inventory;
 
@@ -7,10 +8,12 @@ public class TradeCommand {
 	public GrandExchange ge;
 	public Inventory inv;
 	public ContextContainer container;
+	public ClientState clientState;
 	
 	public TradeCommand(ContextContainer container) {
 		ge = container.getGE();
 		inv = container.getInv();
 		this.container = container;
+		this.clientState = container.getClientState();
 	}
 }

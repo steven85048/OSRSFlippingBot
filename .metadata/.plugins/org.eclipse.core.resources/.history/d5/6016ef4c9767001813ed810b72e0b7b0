@@ -1,0 +1,10 @@
+package Transaction;
+
+import org.powerbot.script.rt4.Item;
+
+public class ActiveTransaction {
+	Item item;
+	boolean buySell;
+	
+	
+}

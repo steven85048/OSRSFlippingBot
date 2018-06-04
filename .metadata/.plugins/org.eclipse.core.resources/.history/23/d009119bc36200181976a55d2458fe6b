@@ -1,0 +1,5 @@
+package Client;
+
+public class ClientState {
+	private HashMap<String, Object> = new HashMap<String, Object>();
+}

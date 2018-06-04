@@ -1,0 +1,10 @@
+package DefaultActions;
+
+public class DefaultHandler {
+	ContextContainer contextContainer;
+	Queue<Command> commandQueue;
+	
+	public DefaultHandler() {
+		
+	}
+}

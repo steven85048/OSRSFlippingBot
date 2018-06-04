@@ -1,0 +1,28 @@
+package Commands;
+
+public class Buy implements Command {
+
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	private int itemQuantity;
+	private int itemId;
+	private int itemPrice;
+	
+	public Buy(int aItemQuantity, int aItemId, int aItemPrice) {
+		itemQuantity = aItemQuantity;
+		itemId = aItemId;
+		itemPrice = aItemPrice;
+	}
+	
+	@Override
+	public void command() {
+		
+	}
+
+	@Override
+	public boolean isRunnable() {
+		return true;
+	}
+}

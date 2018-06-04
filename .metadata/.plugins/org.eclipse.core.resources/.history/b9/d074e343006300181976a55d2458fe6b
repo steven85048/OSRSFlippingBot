@@ -1,0 +1,10 @@
+package Commands;
+
+public class TradeCommand {
+	private GrandExchange ge;
+	private Inventory inv;
+	
+	public TradeCommand(ContextContainer container) {
+		
+	}
+}

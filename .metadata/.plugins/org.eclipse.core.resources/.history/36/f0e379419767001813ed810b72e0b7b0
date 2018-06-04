@@ -1,0 +1,6 @@
+package Transaction;
+
+public class ActiveTransaction {
+	Item item;
+	
+}

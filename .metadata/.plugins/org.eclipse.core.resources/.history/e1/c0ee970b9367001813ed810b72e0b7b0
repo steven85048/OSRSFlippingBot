@@ -1,0 +1,36 @@
+package DefaultActions;
+
+import org.powerbot.script.rt4.Item;
+
+import Commands.ContextContainer;
+import Commands.TradeCommand;
+
+public class TransactionAcceptor extends TradeCommand {
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	Item[] previousInventory;
+	
+	// ===========================================================================
+	// MAIN FUNCTIONS
+	// ===========================================================================
+	
+	public TransactionAcceptor(ContextContainer contextContainer) {
+		// get the necessary functionality
+		super(contextContainer);
+		
+		// set the initial inventory
+		previousInventory = clientState.getItems();
+	}
+	
+	public void collectTransactions() {
+		// press collect and update state if successful
+		if (ge.collectToInventory())
+			updateTransactions();
+	}
+	
+	public void updateTransactions() {
+		
+	}
+}

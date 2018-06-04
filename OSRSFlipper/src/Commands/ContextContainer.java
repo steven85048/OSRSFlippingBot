@@ -25,10 +25,10 @@ public class ContextContainer {
 		this.ctx = ctx;
 		ge = new GrandExchange(ctx);
 		inv = new Inventory(ctx);
-		clientState = new ClientState(ctx, inv, ge);
-		
-		// Get initial client state
-		clientState.updateClientState();
+	}
+	
+	public void setClientState(ClientState clientState) {
+		this.clientState = clientState;
 	}
 	
 	public ClientContext getContext() {
@@ -46,4 +46,5 @@ public class ContextContainer {
 	public ClientState getClientState() {
 		return clientState;
 	}
+	
 }

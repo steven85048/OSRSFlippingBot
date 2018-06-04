@@ -252,7 +252,6 @@ public class GrandExchange extends ClientAccessor {
 		return ctx.widgets.widget(WIDGET).valid();
 	}
 	
-	
 	private boolean collect(final boolean toBank) {
 		Component collect = ctx.widgets.component(WIDGET, COLLECT_COMPONENT)
 				.component(COLLECT_SUBCOMPONENT);

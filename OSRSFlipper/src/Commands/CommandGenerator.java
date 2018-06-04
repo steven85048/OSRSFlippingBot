@@ -41,16 +41,9 @@ public class CommandGenerator {
 	}
 	
 	// registers a new client to the commandgenerator
-	public void addContext(ClientContext ctx, Queue<Command> commandList) { 
-		ContextContainer newContainer = new ContextContainer(ctx);
-		contexts.add(newContainer);
+	public void addContext(ContextContainer container, Queue<Command> commandList) { 
+		contexts.add(container);
 		commandLists.add(commandList); 
-	}
-	
-	// updates the current client state
-	public void updateClientState(int clientIndex) {
-		ContextContainer aContainer = contexts.get(clientIndex);
-		aContainer.getClientState().updateClientState();
 	}
 	
 	public void addCommand(int clientIndex) {

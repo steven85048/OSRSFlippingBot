@@ -1,0 +1,16 @@
+package Transaction;
+
+public class ItemPurchaseData {
+	private class PurchaseTuple<Quantity, Cost> {
+		private Quantity quantity;
+		private Cost cost;
+		
+		public PurchaseTuple(Quantity quantity, Cost cost){
+			this.quantity = quantity;
+			this.cost = cost;
+		}
+	}
+	
+	private int itemId;
+	private int
+}

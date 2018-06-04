@@ -1,0 +1,7 @@
+package Client;
+
+public class DefaultCommand extends ClientAccessor{
+	public DefaultCommand(ClientContext ctx){
+		super(ctx);''
+	}
+}

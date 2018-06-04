@@ -1,5 +1,7 @@
 package Commands;
 
+import Client.ClientState;
+
 public class Buy extends TradeCommand implements Command {
 
 	// ===========================================================================
@@ -35,12 +37,12 @@ public class Buy extends TradeCommand implements Command {
 
 	@Override
 	public boolean isRunnable() {
-		if (container.getClientState().getEmptySlots() <= 0) {
+		if (clientState.getEmptySlots() <= 0) {
 			System.out.println("COMMAND_ERR: Not enough slots");
 			return false;
 		}
 		
-		if (container.getClientState().getGoldCount() < itemCost ) {
+		if (clientState.getGoldCount() < itemCost ) {
 			System.out.println("COMMAND_ERR: Not enough gold to purchase");
 			return false;
 		}

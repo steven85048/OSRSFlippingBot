@@ -1,0 +1,8 @@
+package Utility;
+
+public class Timer {
+	
+	public static long getCurrentTime() {
+		return System.currentTimeMillis();
+	}
+}

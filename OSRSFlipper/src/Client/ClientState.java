@@ -1,5 +1,8 @@
 package Client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /*
  * Class that contains and updates the current user state
  */
@@ -8,6 +11,8 @@ import org.powerbot.script.rt4.ClientAccessor;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
 
+import Transaction.ActiveTransaction;
+import Transaction.ItemPurchaseData;
 import Utility.GrandExchange;
 import Utility.Inventory;
 
@@ -25,12 +30,18 @@ public class ClientState extends ClientAccessor{
 	private int goldCount;
 	private Item[] inventory;
 	private int emptySlots;
+	private HashMap<Integer, ItemPurchaseData> purchaseMap;
+	private ArrayList<ActiveTransaction> activeTransactions;
 	
 	public ClientState(ClientContext ctx, Inventory inv, GrandExchange ge) {
 		super(ctx);
 		
 		this.inv = inv;
 		this.ge = ge;
+		
+		updateClientState();
+		purchaseMap = new HashMap<Integer, ItemPurchaseData>();
+		activeTransactions = new ArrayList<ActiveTransaction>();
 	}
 	
 	// SETTERS for the client state
@@ -55,7 +66,10 @@ public class ClientState extends ClientAccessor{
 	
 	public void setEmptySlots() {
 		this.emptySlots = ge.getAvailableSlots() - FREEMIUM_SLOT;
-		System.out.println(emptySlots);
+	}
+	
+	public void itemPurchased() {
+		
 	}
 	
 	// ===========================================================================

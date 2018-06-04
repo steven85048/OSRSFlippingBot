@@ -1,0 +1,20 @@
+package Commands;
+
+import org.powerbot.script.rt4.Item;
+
+public class Sell implements Command {
+
+	private Item item;
+	private int itemQuantity;
+	private int itemId;
+	
+	@Override
+	public void command() {
+		
+	}
+
+	@Override
+	public boolean isRunnable() {
+		return false;
+	}
+}

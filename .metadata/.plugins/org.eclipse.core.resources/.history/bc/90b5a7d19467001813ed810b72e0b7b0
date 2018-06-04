@@ -1,0 +1,10 @@
+package Transaction;
+
+public class ItemPurchaseData {
+	private class PurchaseTuple<Quantity, Cost> {
+		
+	}
+	
+	private int itemId;
+	private int
+}

@@ -2,6 +2,8 @@ package Commands;
 
 import org.powerbot.script.rt4.Item;
 
+import Client.ClientState;
+
 public class Sell extends TradeCommand implements Command {
 
 	private Item item;
@@ -40,7 +42,7 @@ public class Sell extends TradeCommand implements Command {
 
 	@Override
 	public boolean isRunnable() {
-		if (container.getClientState().getEmptySlots() <= 0) {
+		if (clientState.getEmptySlots() <= 0) {
 			System.out.println("COMMAND_ERR: Not enough slots");
 			return false;
 		}

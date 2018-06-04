@@ -1,0 +1,14 @@
+package Client;
+
+/*
+ * Defines the default behavior that is run in the background in between two commands
+ */
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+
+public class DefaultCommand extends ClientAccessor{
+	public DefaultCommand(ClientContext ctx){
+		super(ctx);
+	}
+}

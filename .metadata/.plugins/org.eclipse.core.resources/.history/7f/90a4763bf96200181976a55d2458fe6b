@@ -1,0 +1,18 @@
+package Commands;
+
+public class Sell implements Command {
+
+	private Item item;
+	private int itemQuantity;
+	private int itemId;
+	
+	@Override
+	public void command() {
+		
+	}
+
+	@Override
+	public boolean isRunnable() {
+		return false;
+	}
+}

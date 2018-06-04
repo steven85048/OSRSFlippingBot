@@ -1,0 +1,10 @@
+package ScriptPackage;
+
+/*
+ * Singleton class that updates the commands for the client(s). The actual
+ * logic for the updating is performed in the CommandUpdater.
+ */
+
+public class CommandGenerator {
+
+}

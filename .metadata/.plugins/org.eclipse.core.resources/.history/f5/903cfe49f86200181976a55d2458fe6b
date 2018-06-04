@@ -1,0 +1,40 @@
+package Client;
+
+/*
+ * Class that contains and updates the current user state
+ */
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Item;
+
+public class ClientState extends ClientAccessor{
+	
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	private Inventory inv;
+	
+	private int goldCount;
+	private Item[] inventory;
+	private int emptySlots;
+	
+	public ClientState(ClientContext ctx, Inventory inv) {
+		super(ctx);
+		
+		this.inv = inv;
+	}
+	
+	// SETTERS for the client state
+	
+	public void updateClientState() {
+		
+	}
+	
+	public void setGoldCount(){
+		
+	}
+	
+	
+}
