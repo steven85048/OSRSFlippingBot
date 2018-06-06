@@ -16,53 +16,133 @@ import Transaction.ItemPurchaseData;
 import Utility.GrandExchange;
 import Utility.Inventory;
 
-public class ClientState extends ClientAccessor{
-	
+public class ClientState extends ClientAccessor {
+
 	public int FREEMIUM_SLOT = 5;
-	
+
 	// ===========================================================================
 	// INSTANCE VARIABLES
 	// ===========================================================================
-	
+
 	private Inventory inv;
 	private GrandExchange ge;
-	
+
 	private int goldCount;
 	private Item[] inventory;
 	private int emptySlots;
-	private HashMap<Integer, ItemPurchaseData> purchaseMap;
+	private HashMap<String, ItemPurchaseData> purchaseMap;
 	private ArrayList<ActiveTransaction> activeTransactions;
-	
+
 	public ClientState(ClientContext ctx, Inventory inv, GrandExchange ge) {
 		super(ctx);
-		
+
 		this.inv = inv;
 		this.ge = ge;
-		
+
 		updateClientState();
-		purchaseMap = new HashMap<Integer, ItemPurchaseData>();
+		purchaseMap = new HashMap<String, ItemPurchaseData>();
 		activeTransactions = new ArrayList<ActiveTransaction>();
 	}
-	
+
 	// SETTERS for the client state
-	
+
 	public void updateClientState() {
 		setGoldCount();
 		setEmptySlots();
 	}
-	
+
 	// ===========================================================================
-	// SETTERS 
+	// TRANSACTION METHODS
 	// ===========================================================================
-	
-	public void setGoldCount(){
-		this.goldCount = inv.getGoldCount();
+
+	// Updates the active transactions with the
+	public void transactionCompletionHandler() {
+		// Get the updated transactions
+		ArrayList<ActiveTransaction> updatedTransactions = new ArrayList<ActiveTransaction>();
+		
+		// get the current active transactions
+		ArrayList<ActiveTransaction> currTransactions = ge.getSlotPurchase();
+
+		// Compare those with the previous iteration's active transactions (only
+		// 64 max iterations so w/e)
+		for (int i = 0; i < activeTransactions.size(); i++) {
+			boolean match = false;
+
+			ActiveTransaction aTransaction = activeTransactions.get(i);
+			
+			for (int j = 0; j < currTransactions.size(); j++) {
+				// Determine if matching
+				ActiveTransaction bTransaction = currTransactions.get(j);
+
+				// check if match
+				if (transactionMatch(aTransaction, bTransaction)) {
+					match = true;
+					
+					// Perform quant diff
+					int quantDiff = Math.abs(aTransaction.getItemQuantityTerm() - bTransaction.getItemQuantityTerm());
+					int priceDiff = Math.abs(aTransaction.getPriceTerm() - bTransaction.getPriceTerm());
+					
+					if (transactionHandler(quantDiff, priceDiff, aTransaction)){
+						updatedTransactions.add(bTransaction);
+					}
+					
+					break;
+				}
+			}
+			
+			// if there is no match, that transaction just completed!
+			if (!match) {
+				// Perform quant diff
+				int quantDiff = Math.abs(aTransaction.getItemQuantity() - aTransaction.getItemQuantityTerm());
+				int priceDiff = Math.abs(aTransaction.getItemCost() - aTransaction.getPriceTerm());
+				
+				boolean transactionSaved = transactionHandler(quantDiff, priceDiff, aTransaction);
+			}
+		}
+	}
+
+	public boolean transactionHandler(int quantDiff, int priceDiff, ActiveTransaction transaction) {
+		// Check if the difference has changed
+		if (quantDiff != 0 && priceDiff != 0) {
+			// If buy
+			if (transaction.isBuyOrSell()) {
+				System.out.println("PURCHASE: " + transaction.getItemName() + " of " + quantDiff + "# at " + priceDiff + " coins");
+			} 
+			// If sell
+			else {
+				System.out.println("SALE: " + transaction.getItemName() + " of " + quantDiff + "# at " + priceDiff + " coins");
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
+	// Determines if the two transactions match
+	public boolean transactionMatch(ActiveTransaction aTransaction, ActiveTransaction bTransaction) {
+		if (aTransaction.getItemName().equals(bTransaction.getItemName())
+				&& (aTransaction.isBuyOrSell() && bTransaction.isBuyOrSell())
+				&& (aTransaction.getItemQuantity() == bTransaction.getItemQuantity())
+				&& (aTransaction.getItemCost() == bTransaction.getItemCost()))
+			return true;
+		else
+			return false;
+
+	}
+
+	// ===========================================================================
+	// SETTERS
+	// ===========================================================================
+
+	public void setGoldCount() {
+		this.goldCount = inv.getGoldCount();
+	}
+
 	public void setItems() {
 		this.inventory = inv.getItems();
 	}
-	
+
 	public void setEmptySlots() {
 		this.emptySlots = ge.getAvailableSlots() - FREEMIUM_SLOT;
 	}
@@ -70,28 +150,19 @@ public class ClientState extends ClientAccessor{
 	public void addTransaction(ActiveTransaction transaction) {
 		activeTransactions.add(transaction);
 	}
-	
-	// ===========================================================================
-	// TRANSACTION METHODS
-	// ===========================================================================
-	
-	public void transactionCompletionHandler() {
-		ArrayList<ActiveTransaction> currTransactions = ge.getSlotPurchase();
-	}
-	
-	
+
 	// ===========================================================================
 	// GETTERS
 	// ===========================================================================
-	
+
 	public int getGoldCount() {
 		return this.goldCount;
 	}
-	
+
 	public Item[] getItems() {
 		return this.inventory;
 	}
-	
+
 	public int getEmptySlots() {
 		return this.emptySlots;
 	}

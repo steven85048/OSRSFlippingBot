@@ -106,6 +106,9 @@ public class GrandExchange extends ClientAccessor {
 		
 		try{
 		
+		// Sleep before looping through slots
+		Thread.sleep(1500);
+			
 		// Open the slot window
 		for (int i = 0 ; i < 8; i++) {
 			// ==== SLOT OPENING ====

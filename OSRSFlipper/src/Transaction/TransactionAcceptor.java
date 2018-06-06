@@ -1,5 +1,7 @@
 package Transaction;
 
+import java.util.ArrayList;
+
 import org.powerbot.script.rt4.Item;
 
 import Commands.ContextContainer;
@@ -24,12 +26,14 @@ public class TransactionAcceptor extends TradeCommand {
 		previousInventory = clientState.getItems();
 	}
 
+	// Collect the transactions if visible
 	public void collectTransactions() {
 		//press collect and update state if successful
 		if (ge.collectToInventory())
 			updateTransactions();
 	}
 
+	// If the transaction was completed, then get the current active transactions
 	public void updateTransactions() {
 		clientState.transactionCompletionHandler();
 	}
