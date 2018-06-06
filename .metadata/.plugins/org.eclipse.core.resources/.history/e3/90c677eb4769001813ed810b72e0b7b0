@@ -1,0 +1,24 @@
+package Utility;
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Component;
+
+public class AssertComponent extends ClientAccessor {
+	public AssertComponent(ClientContext ctx) {
+		super(ctx);
+	}
+	
+	private static int MAIN_WIDGET = 465;
+	
+	private static boolean assertMainWidget() {
+		Component component = ctx.widgets.
+	}
+	
+	private boolean affirmVisible(Component component) {
+		if (component.visible())
+			return true;
+		else 
+			return false;
+	}
+}

@@ -1,0 +1,30 @@
+package ErrorHandling;
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+
+import Utility.GrandExchange;
+
+/*
+ * Assert whether or not the client is in the correct state to proceed
+ */
+
+public class AssertState extends ClientAccessor{
+	private GrandExchange ge;
+	
+	public AssertState(ClientContext ctx, GrandExchange ge) {
+		super(ctx);
+		
+		this.ge = ge;
+	}
+	
+	public boolean assertMainState() {
+		if (ge.mainWindowOpened())
+			return true;
+		
+		// if its open but in the right subwindow, just close and reopen
+		if (ctx.widgets.widget(465).valid()){
+			
+		}
+	}
+}

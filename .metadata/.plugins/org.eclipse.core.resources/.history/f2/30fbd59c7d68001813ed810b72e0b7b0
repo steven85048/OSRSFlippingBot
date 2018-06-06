@@ -1,0 +1,177 @@
+package Client;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/*
+ * Class that contains and updates the current user state
+ */
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Item;
+
+import Transaction.ActiveTransaction;
+import Transaction.ItemPurchaseData;
+import Utility.GrandExchange;
+import Utility.Inventory;
+
+public class ClientState extends ClientAccessor{
+	
+	public int FREEMIUM_SLOT = 5;
+	
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	private Inventory inv;
+	private GrandExchange ge;
+	
+	private int goldCount;
+	private Item[] inventory;
+	private int emptySlots;
+	private HashMap<Integer, ItemPurchaseData> purchaseMap;
+	private ArrayList<ActiveTransaction> activeTransactions;
+	
+	public ClientState(ClientContext ctx, Inventory inv, GrandExchange ge) {
+		super(ctx);
+		
+		this.inv = inv;
+		this.ge = ge;
+		
+		updateClientState();
+		purchaseMap = new HashMap<Integer, ItemPurchaseData>();
+		activeTransactions = new ArrayList<ActiveTransaction>();
+	}
+	
+	// SETTERS for the client state
+	
+	public void updateClientState() {
+		setGoldCount();
+		setEmptySlots();
+	}
+	
+	// ===========================================================================
+	// SETTERS 
+	// ===========================================================================
+	
+	public void setGoldCount(){
+		this.goldCount = inv.getGoldCount();
+	}
+	
+	public void setItems() {
+		this.inventory = inv.getItems();
+	}
+	
+	public void setEmptySlots() {
+		this.emptySlots = ge.getAvailableSlots() - FREEMIUM_SLOT;
+	}
+
+	public void addTransactxion(ActiveTransaction transaction) {
+		activeTransactions.add(transaction);
+	}
+	
+	// ===========================================================================
+	// TRANSACTION METHODS
+	// ===========================================================================
+	
+	public void transactionCompletionHandler() {
+		System.out.print("PROGRESS: ");
+		
+		for (int i = 0 ; i < 8; i++) {
+			System.out.print(ge.getProgress(i) + "  ");
+		}
+		
+		System.out.println();
+	}
+	
+	/*
+	public void transactionCompletionHandler() {
+		// Get the item hashmap before
+		HashMap<Integer, Item> itemHmBefore = getItemMap();
+		
+		// update the current items
+		setItems();
+		
+		// Get the item hashmap
+		HashMap<Integer, Item>  itemHmAfter = getItemMap();
+		
+		// We only care about the items in the active transactions
+		for (int i = 0 ; i < activeTransactions.size(); i++) {
+			ActiveTransaction currTransaction = activeTransactions.get(i);
+			int transactionId = currTransaction.itemId;
+			
+			// Calculate the quantity difference of the transactions
+			
+			int quantBefore = 0;
+			int quantAfter = 0;
+			
+			if (itemHmBefore.containsKey(transactionId))
+				quantBefore = itemHmBefore.get(transactionId).stackSize();
+			
+			if (itemHmAfter.containsKey(transactionId))
+				quantBefore = itemHmAfter.get(transactionId).stackSize();
+			
+			int quantDiff = quantAfter - quantBefore;
+			
+			if (quantDiff == 0){
+				continue;
+			} else if (quantDiff > 0) { // Item has been sold
+				
+			} else if (quantDiff < 0) { // Item has been purchased
+				
+			}
+			
+		}
+	}
+	
+	// update active transaction and complete if applicable
+	public void updateActiveTransaction(int activeTransactionIndex, int quantChange) {
+		ActiveTransaction transaction = activeTransactions.get(activeTransactionIndex);
+		transaction.itemQuantity -= Math.abs(quantChange);
+		
+		// Remove if transaction has been completed
+		if (transaction.itemQuantity <= 0) {
+			activeTransactions.remove(activeTransactionIndex);
+		}
+	}
+	
+	// create an id:item mapping from item array
+	public HashMap<Integer, Item> getItemMap() {
+		HashMap<Integer, Item> hm = new HashMap<Integer, Item>();
+		
+		for (int i = 0 ; i < inventory.length; i++) {
+			Item currItem = inventory[i];
+			int itemId = currItem.id();
+			
+			hm.put(itemId, currItem);
+		}
+		
+		return hm;
+	}
+	
+	public void itemPurchased() {
+		
+	}
+	
+	public void itemSold() {
+		
+	}
+	*/
+	
+	// ===========================================================================
+	// GETTERS
+	// ===========================================================================
+	
+	public int getGoldCount() {
+		return this.goldCount;
+	}
+	
+	public Item[] getItems() {
+		return this.inventory;
+	}
+	
+	public int getEmptySlots() {
+		return this.emptySlots;
+	}
+}

@@ -1,0 +1,9 @@
+package ErrorHandling;
+
+/*
+ * Assert whether or not the client is in the correct state to proceed
+ */
+
+public class AssertState {
+
+}

@@ -1,0 +1,22 @@
+package Utility;
+
+import org.powerbot.script.rt4.Component;
+
+public class AssertComponent {
+	public AssertComponent(ClientContext ctx) {
+		
+	}
+	
+	private static int MAIN_WIDGET = 465;
+	
+	private static boolean assertMainWidget() {
+		Component component = 
+	}
+	
+	private boolean affirmVisible(Component component) {
+		if (component.visible())
+			return true;
+		else 
+			return false;
+	}
+}

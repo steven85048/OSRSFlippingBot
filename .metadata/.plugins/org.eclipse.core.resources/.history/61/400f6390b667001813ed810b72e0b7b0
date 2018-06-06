@@ -1,0 +1,60 @@
+package Commands;
+
+import Client.ClientState;
+import Transaction.ActiveTransaction;
+
+public class Buy extends TradeCommand implements Command {
+
+	// ===========================================================================
+	// INSTANCE VARIABLES
+	// ===========================================================================
+	
+	private int itemQuantity;
+	private int itemId;
+	private int itemPrice;
+	private int itemCost;
+	
+	private ActiveTransaction mActiveTransaction;
+		
+	public Buy(int aItemQuantity, int aItemId, int aItemPrice, ContextContainer container) {
+		super(container);
+		
+		itemQuantity = aItemQuantity;
+		itemId = aItemId;
+		itemPrice = aItemPrice;	
+		itemCost = itemPrice * itemQuantity;
+		
+		mActiveTransaction = new ActiveTransaction(itemPrice, true, itemQuantity, itemPrice);
+	}
+	
+	@Override
+	public boolean command() {
+		try {
+			return ge.buy(itemId, itemQuantity, itemPrice);
+		} catch (Exception e){
+			System.out.println("Buy Command Failed");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isRunnable() {
+		if (clientState.getEmptySlots() <= 0) {
+			System.out.println("COMMAND_ERR: Not enough slots");
+			return false;
+		}
+		
+		if (clientState.getGoldCount() < itemCost ) {
+			System.out.println("COMMAND_ERR: Not enough gold to purchase");
+			return false;
+		}
+		
+		return true;
+	}
+
+	@Override
+	public ActiveTransaction activeTransaction() {
+		
+	}
+}

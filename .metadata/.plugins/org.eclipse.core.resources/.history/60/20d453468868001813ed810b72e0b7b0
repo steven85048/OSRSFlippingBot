@@ -1,0 +1,29 @@
+package Transaction;
+
+import org.powerbot.script.rt4.Item;
+
+import Utility.Timer;
+
+public class ActiveTransaction {
+	
+	// Too lazy to make getters
+	
+	public String itemName;
+	public boolean buySell;
+	public int itemQuantity;
+	public int itemCost;
+	public long startTime;
+	public int itemQuantityTerm;
+	public int priceTerm;
+	
+	public ActiveTransaction(String itemName, boolean buySell, int itemQuantity, int itemCost) {
+		this.itemName = itemId;
+		this.buySell = buySell;
+		this.itemQuantity = itemQuantity;
+		this.itemCost = itemCost;
+	}
+	
+	public void setStartTime() {
+		startTime = Timer.getCurrentTime();
+	}
+}

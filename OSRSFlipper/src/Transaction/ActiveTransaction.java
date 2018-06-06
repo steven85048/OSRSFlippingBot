@@ -1,24 +1,97 @@
 package Transaction;
 
+/*
+ * Defines the data in an active transaction
+ */
+
 import org.powerbot.script.rt4.Item;
 
 import Utility.Timer;
 
 public class ActiveTransaction {
-	
-	// Too lazy to make getters
-	
-	public Item item;
-	public boolean buySell;
-	public int itemQuantity;
-	public int itemCost;
-	public long startTime;
-	
-	public ActiveTransaction(Item item, boolean buySell, int itemQuantity, int itemCost) {
-		this.item = item;
-		this.buySell = buySell;
+
+	private String itemName;
+	private boolean buyOrSell;
+	private int itemQuantity;
+	private int itemCost;
+	private long startTime;
+	private int itemQuantityTerm;
+	private int priceTerm;
+
+	// ==== CONSTRUCTOR =====
+
+	public ActiveTransaction(String itemName, boolean buyOrSell, int itemQuantity, int itemCost, int itemQuantityTerm,
+			int priceTerm) {
+		this.itemName = itemName;
+		this.buyOrSell = buyOrSell;
 		this.itemQuantity = itemQuantity;
 		this.itemCost = itemCost;
+		this.itemQuantityTerm = itemQuantityTerm;
+		this.priceTerm = priceTerm;
+	}
+
+	// ==== GETTERS AND SETTERS ====
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public boolean isBuyOrSell() {
+		return buyOrSell;
+	}
+
+	public void setBuyOrSell(boolean buyOrSell) {
+		this.buyOrSell = buyOrSell;
+	}
+
+	public int getItemQuantity() {
+		return itemQuantity;
+	}
+
+	public void setItemQuantity(int itemQuantity) {
+		this.itemQuantity = itemQuantity;
+	}
+
+	public int getItemCost() {
+		return itemCost;
+	}
+
+	public void setItemCost(int itemCost) {
+		this.itemCost = itemCost;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime() {
 		startTime = Timer.getCurrentTime();
+	}
+
+	public int getItemQuantityTerm() {
+		return itemQuantityTerm;
+	}
+
+	public void setItemQuantityTerm(int itemQuantityTerm) {
+		this.itemQuantityTerm = itemQuantityTerm;
+	}
+
+	public int getPriceTerm() {
+		return priceTerm;
+	}
+
+	public void setPriceTerm(int priceTerm) {
+		this.priceTerm = priceTerm;
+	}
+
+	// ==== OTHER FUNCTIONS =====
+
+	public String toString() {
+		return "ITEM: " + itemName + "\nBUYORSELL: " + buyOrSell + "\nQUANTITY: " + itemQuantity + "\nITEM COST: "
+				+ itemCost + "\nSTART TIME: " + startTime + "\nCURR ITEM QUANTITY: " + itemQuantityTerm + "\nCURR GOLD USE: " + priceTerm + "\n";
 	}
 }

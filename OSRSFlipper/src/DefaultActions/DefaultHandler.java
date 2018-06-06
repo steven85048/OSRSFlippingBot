@@ -4,17 +4,22 @@ import java.util.Queue;
 
 import Commands.Command;
 import Commands.ContextContainer;
+import Transaction.TransactionAcceptor;
 
 public class DefaultHandler {
 	ContextContainer contextContainer;
 	Queue<Command> commandQueue;
 	
+	TransactionAcceptor acceptor;
+	
 	public DefaultHandler(ContextContainer contextContainer, Queue<Command> commandQueue) {
 		this.contextContainer = contextContainer;
 		this.commandQueue = commandQueue;
+		
+		acceptor = new TransactionAcceptor(this.contextContainer);
 	}
 	
 	public void defaultAction() {
-		
+		acceptor.collectTransactions();
 	}
 }

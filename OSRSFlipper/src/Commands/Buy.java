@@ -1,6 +1,7 @@
 package Commands;
 
 import Client.ClientState;
+import Transaction.ActiveTransaction;
 
 public class Buy extends TradeCommand implements Command {
 
@@ -11,8 +12,9 @@ public class Buy extends TradeCommand implements Command {
 	private int itemQuantity;
 	private int itemId;
 	private int itemPrice;
-		
 	private int itemCost;
+	
+	private ActiveTransaction mActiveTransaction;
 		
 	public Buy(int aItemQuantity, int aItemId, int aItemPrice, ContextContainer container) {
 		super(container);
@@ -20,8 +22,9 @@ public class Buy extends TradeCommand implements Command {
 		itemQuantity = aItemQuantity;
 		itemId = aItemId;
 		itemPrice = aItemPrice;	
-		
 		itemCost = itemPrice * itemQuantity;
+		
+		mActiveTransaction = new ActiveTransaction(ge.getNameFromId(itemId).toLowerCase(), true, itemQuantity, itemPrice, 0, 0);
 	}
 	
 	@Override
@@ -48,5 +51,11 @@ public class Buy extends TradeCommand implements Command {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public ActiveTransaction activeTransaction() {
+		mActiveTransaction.setStartTime();
+		return mActiveTransaction;
 	}
 }

@@ -15,7 +15,8 @@ import org.powerbot.script.rt4.ClientContext;
 import Commands.Command;
 import Commands.CommandGenerator;
 import Commands.ContextContainer;
-import DefaultActions.DefaultCommand;
+import DefaultActions.DefaultHandler;
+import ErrorHandling.AssertState;
 
 @Script.Manifest(name = "GeExchange", description = "Flipping Bot")
 public class OSRSFlipper extends PollingScript<ClientContext> {
@@ -26,9 +27,10 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 
 	private CommandGenerator generator;
 	private Queue<Command> commandList;
-	private DefaultCommand defaultCommand;
+	private DefaultHandler defaultHandler;
 	private ContextContainer contextContainer;
 	private ClientState clientState;
+	private AssertState assertState;
 	
 	private int id;
 
@@ -56,8 +58,11 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 		generator = CommandGenerator.getInstance();
 		generator.addContext(contextContainer, commandList);
 
+		// Create assert state
+		assertState = new AssertState(contextContainer.getGE());
+		
 		// Default command init
-		defaultCommand = new DefaultCommand(ctx);
+		defaultHandler = new DefaultHandler(contextContainer, commandList);
 		
 		generator.addCommand(id);
 	}
@@ -65,13 +70,25 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 	// Method that will be continuously called for this client
 	@Override
 	public void poll() {
+		// FIRST we need to make sure that the grand exchange is open and on the default slot mode
+		if (!assertState.assertMainState()) {
+			System.out.println("FATAL ERROR: Cannot recover grand exchange");
+			return;
+		}
+		
 		// start by updating the client state
 		clientState.updateClientState();
 
 		// always prioritize running commands
 		if (!commandList.isEmpty() && commandList.peek().isRunnable()) {
-			commandList.poll().command();
-
+			
+			// run the top of the queue's command
+			Command currCommand = commandList.poll();
+			currCommand.command();
+			
+			// add that transaction to the list of active transactions
+			clientState.addTransaction(currCommand.activeTransaction());
+			
 			// Wait a bit until next command
 			try {
 				Thread.sleep(1000);
@@ -80,8 +97,9 @@ public class OSRSFlipper extends PollingScript<ClientContext> {
 			}
 		} else {
 			// Default background activity
-			defaultCommand.defaultActivity();
+			defaultHandler.defaultAction();
 		}
+		
 	}
 
 	// Cleanup method to deallocate resources

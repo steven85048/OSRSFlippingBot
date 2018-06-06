@@ -1,6 +1,6 @@
 package Commands;
 
-import org.powerbot.script.rt4.ClientContext;
+import Transaction.ActiveTransaction;
 
 /*
  * Default functions all commands must have
@@ -14,4 +14,6 @@ public interface Command {
 	public boolean command();
 	
 	public boolean isRunnable();
+	
+	public ActiveTransaction activeTransaction();
 }

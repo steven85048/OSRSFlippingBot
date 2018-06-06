@@ -3,6 +3,7 @@ package Commands;
 import org.powerbot.script.rt4.Item;
 
 import Client.ClientState;
+import Transaction.ActiveTransaction;
 
 public class Sell extends TradeCommand implements Command {
 
@@ -10,6 +11,8 @@ public class Sell extends TradeCommand implements Command {
 	private int itemQuantity;
 	private int itemPrice;
 	private int itemId = -1;
+	
+	private ActiveTransaction mActiveTransaction;
 		
 	public Sell(int aItemQuantity, Item aItem, int aItemPrice, ContextContainer container) {
 		super(container);
@@ -17,6 +20,8 @@ public class Sell extends TradeCommand implements Command {
 		item = aItem;
 		itemQuantity = aItemQuantity;
 		itemPrice = aItemPrice;
+		
+		mActiveTransaction = new ActiveTransaction(aItem.name().toLowerCase(), false, itemQuantity, itemPrice, 0, 0);
 	}
 	
 	public Sell(int aItemQuantity, int itemID, int aItemPrice, ContextContainer container) {
@@ -25,6 +30,8 @@ public class Sell extends TradeCommand implements Command {
 		itemQuantity = aItemQuantity;
 		itemPrice = aItemPrice;
 		this.itemId = itemID;
+		
+		mActiveTransaction = new ActiveTransaction(ge.getNameFromId(itemId).toLowerCase(), false, itemQuantity, itemPrice, 0, 0);
 	}
 	
 	@Override
@@ -48,5 +55,11 @@ public class Sell extends TradeCommand implements Command {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public ActiveTransaction activeTransaction() {
+		mActiveTransaction.setStartTime();
+		return mActiveTransaction;
 	}
 }

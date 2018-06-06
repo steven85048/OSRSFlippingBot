@@ -1,0 +1,11 @@
+package Utility;
+
+public class AssertComponent {
+	
+	private boolean affirmVisible(Component component) {
+		if (component.isVisible())
+			return true;
+		else 
+			return false;
+	}
+}

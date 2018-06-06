@@ -48,7 +48,6 @@ public class ClientState extends ClientAccessor{
 	
 	public void updateClientState() {
 		setGoldCount();
-		setItems();
 		setEmptySlots();
 	}
 	
@@ -67,10 +66,19 @@ public class ClientState extends ClientAccessor{
 	public void setEmptySlots() {
 		this.emptySlots = ge.getAvailableSlots() - FREEMIUM_SLOT;
 	}
-	
-	public void itemPurchased() {
-		
+
+	public void addTransaction(ActiveTransaction transaction) {
+		activeTransactions.add(transaction);
 	}
+	
+	// ===========================================================================
+	// TRANSACTION METHODS
+	// ===========================================================================
+	
+	public void transactionCompletionHandler() {
+		ArrayList<ActiveTransaction> currTransactions = ge.getSlotPurchase();
+	}
+	
 	
 	// ===========================================================================
 	// GETTERS

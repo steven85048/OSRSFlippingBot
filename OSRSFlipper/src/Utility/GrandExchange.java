@@ -1,12 +1,20 @@
 package Utility;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.powerbot.script.Condition;
-import org.powerbot.script.Random;
-import org.powerbot.script.rt4.*;
+import org.powerbot.script.rt4.CacheItemConfig;
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Component;
 import org.powerbot.script.rt4.Game.Crosshair;
+import org.powerbot.script.rt4.Item;
+
+import Transaction.ActiveTransaction;
+import Transaction.ItemPurchaseData;
 
 /**
  * Grand Exchange Interface for rt4.
@@ -14,7 +22,6 @@ import org.powerbot.script.rt4.Game.Crosshair;
  * @author Mooshe
  * Retrived from https://gist.github.com/Moosheplusplus/437e0d287aabac17674183f63c389359
  * 
- * (Some methods fixed by Steven)
  */
 public class GrandExchange extends ClientAccessor {
 	
@@ -45,7 +52,7 @@ public class GrandExchange extends ClientAccessor {
 	public GrandExchange(final ClientContext ctx) {
 		super(ctx);
 	}
-	
+
 // ===========================================================================
 // MAIN FUNCTIONS
 // ===========================================================================
@@ -91,6 +98,102 @@ public class GrandExchange extends ClientAccessor {
 		}, 100, 20);
 	}
 		
+	public ArrayList<ActiveTransaction> getSlotPurchase() {
+		
+		final int ITEM_INFO_WIDGET = 465;
+		
+		ArrayList<ActiveTransaction> dataList = new ArrayList<ActiveTransaction>();
+		
+		try{
+		
+		// Open the slot window
+		for (int i = 0 ; i < 8; i++) {
+			// ==== SLOT OPENING ====
+			
+			Component currComponent;
+			
+			// Get the slot
+			if (getSlot(i).component(PROGRESS_BAR).visible()){
+				currComponent = getSlot(i);
+			} else {
+				continue;
+			}
+			
+			// Open the slot
+			if (!Condition.wait(new Callable<Boolean>() {
+				public Boolean call() {
+					currComponent.click();
+					return ctx.widgets.component(465, 22).visible();
+				}
+			}, 100, 25)) {
+				return null;
+			}
+			
+			Thread.sleep(1000);
+			
+			// ===== STRING EXTRACTION ====
+			
+			// Extract the current status data
+			String statusText = ctx.widgets.component(ITEM_INFO_WIDGET, 22).component(1).text();
+			
+			// Extract the quantity and price
+			String aQuantity = ctx.widgets.component(ITEM_INFO_WIDGET, 15).component(18).text();
+			String aPrice = ctx.widgets.component(ITEM_INFO_WIDGET, 15).component(25).text();
+			String aItemName = ctx.widgets.component(ITEM_INFO_WIDGET, 15).component(11).text();
+			
+			// Now lets do some bullshit string manip
+			System.out.println(statusText);
+			
+			// ===== DATA EXTRACTION =====
+			
+			// Get the current amount finished and the price
+			String[] firstSplit = statusText.split(">");
+			int quantityTerm = Integer.parseInt(firstSplit[1].split("<")[0]);
+			int priceTerm = Integer.parseInt(firstSplit[4].split("<")[0]);
+			
+			// Determine if sold or bought
+			boolean buyOrSold;
+			if (statusText.contains("sold"))
+				buyOrSold = false;
+			else
+				buyOrSold = true;
+			
+			// Get the original quantity
+			int quantity = Integer.parseInt(aQuantity);
+			
+			// Get the original price
+			int price = Integer.parseInt(aPrice.split(" ")[0]);
+			
+			// ==== ACTIVE TRANSACTION CREATION ====
+			ActiveTransaction newTransaction = new ActiveTransaction(aItemName.toLowerCase(), buyOrSold, quantity, price, quantityTerm, priceTerm);
+			dataList.add(newTransaction);
+			
+			System.out.println(newTransaction);
+			
+			// ==== RESET TO MAIN WINDOW ====
+			Component backWidget = ctx.widgets.component(ITEM_INFO_WIDGET, 4);
+			
+			// Open the slot and check if in slot view
+			if (!Condition.wait(new Callable<Boolean>() {
+				public Boolean call() {
+					backWidget.click();
+					return ctx.widgets.component(WIDGET, 6).visible();
+				}
+			}, 100, 25)) {
+				System.out.println("BACK WIDGET FAILED");
+				return null;
+			}
+			
+			Thread.sleep(500);
+
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dataList;
+	}
+	
 	/**
 	 * Buys an item from the grand exchange.
 	 * 
@@ -104,15 +207,17 @@ public class GrandExchange extends ClientAccessor {
 			return false;
 		
 		// get the count of vacant slots
-		List<Component> avail = getVacantSlots();
-		if(avail.isEmpty())
+		Component avail = getFirstVacantSlot();
+		if (avail == null) {
+			System.out.println("No available slots");
 			return false;
+		}
 		
 		// verify that the search widget is open
 		if(!Condition.wait(new Callable<Boolean>() {
 			public Boolean call() {
 				// click on one of the slots
-				avail.get(0).component(BUY_COMPONENT)
+				avail.component(BUY_COMPONENT)
 					.click();
 				
 				return ctx.widgets.component(SEARCH_WIDGET, SEARCH_COMPONENT)
@@ -122,14 +227,14 @@ public class GrandExchange extends ClientAccessor {
 			System.out.println("BUY SEARCH WIDGET FAILED");
 			return false;
 		}
-					
+			
 		// load the item name from the cache index
 		final CacheItemConfig cic = CacheItemConfig.load(item);
 		if (!cic.valid())
 			return false;
-			
+		
 		// send that cache name to the client
-		ctx.input.send(cic.name.toLowerCase());
+		ctx.input.send(getNameFromId(item));
 		
 		// verify that the query component is now open
 		if(!Condition.wait(new Callable<Boolean>() {
@@ -212,6 +317,15 @@ public class GrandExchange extends ClientAccessor {
 // HELPER FUNCTIONS
 // ===========================================================================
 	
+	public String getNameFromId(int id) {
+		// load the item name from the cache index
+		final CacheItemConfig cic = CacheItemConfig.load(id);
+		if (!cic.valid())
+			return "";
+		
+		return cic.name.toLowerCase();
+	}
+	
 	/**
 	 * The amount of available slots within the Grand Exchange. Any
 	 * items occupied within a slot will not be counted, or if the slot
@@ -250,6 +364,11 @@ public class GrandExchange extends ClientAccessor {
 	 */
 	public boolean opened() {
 		return ctx.widgets.widget(WIDGET).valid();
+	}
+	
+	// RETURNS true if the grand exchange is open on the slot window
+	public boolean mainWindowOpened() {
+		return ctx.widgets.component(WIDGET, 7).visible();
 	}
 	
 	private boolean collect(final boolean toBank) {
@@ -292,6 +411,16 @@ public class GrandExchange extends ClientAccessor {
 						c.text().equalsIgnoreCase(title);
 			}
 		}, 100, 25);
+	}
+	
+	private Component getFirstVacantSlot() {
+		for (int i = 0 ; i < 8; i++) {
+			if (!getSlot(i).component(PROGRESS_BAR).visible()){
+				return getSlot(i);
+			}
+		}
+		
+		return null;
 	}
 	
 	private List<Component> getVacantSlots() {

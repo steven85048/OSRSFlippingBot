@@ -1,0 +1,15 @@
+package Utility;
+
+import org.powerbot.script.rt4.Component;
+
+public class AssertComponent {
+	
+	
+	
+	private boolean affirmVisible(Component component) {
+		if (component.visible())
+			return true;
+		else 
+			return false;
+	}
+}

@@ -2,8 +2,12 @@ package Transaction;
 
 import java.util.ArrayList;
 
+/*
+ * Saves the purchase data to obtain the margin profit after the purchased items are sold
+ */
+
 public class ItemPurchaseData {
-	private class PurchaseTuple<Quantity, Cost> {
+	public static class PurchaseTuple<Quantity, Cost> {
 		private Quantity quantity;
 		private Cost cost;
 		
@@ -39,10 +43,6 @@ public class ItemPurchaseData {
 		purchases = new ArrayList<PurchaseTuple<Integer, Integer>>();
 	}
 	
-	/*
-	 * purchases sorted by purchase price;
-	 * currently linear time adding; may want to refactor to logarithmic adding later
-	 */
 	public void addPurchase(int quantity, int cost) {
 		for (int i = 0 ; i < purchases.size(); i++) {
 			

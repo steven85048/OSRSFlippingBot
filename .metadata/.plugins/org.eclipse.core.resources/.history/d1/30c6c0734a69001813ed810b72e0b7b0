@@ -1,0 +1,18 @@
+package ErrorHandling;
+
+import org.powerbot.script.rt4.ClientAccessor;
+import org.powerbot.script.rt4.ClientContext;
+
+/*
+ * Assert whether or not the client is in the correct state to proceed
+ */
+
+public class AssertState extends ClientAccessor{
+	public AssertState(ClientContext ctx) {
+		super(ctx);
+	}
+	
+	public boolean assertMainState() {
+		
+	}
+}
