@@ -1,0 +1,13 @@
+package Transaction;
+
+public class TransactionDetails {
+	
+	private String itemId;
+	private int quantity;
+	private int goldDiff;
+	private int transactionTime;
+	
+	public TransactionDetails(String itemId, int quantity, int goldDiff, long transactionTime) {
+		
+	}
+}

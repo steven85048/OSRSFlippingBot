@@ -1,0 +1,67 @@
+package Transaction;
+
+public class CompletedTransaction {
+	
+	private String itemName;
+	private int quantity;
+	private int goldDiff;
+	private long transactionTime;
+	private boolean buyOrSell;
+	
+	public CompletedTransaction(String itemName, int quantity, int goldDiff, long transactionTime, boolean buyOrSell) {
+		this.itemName = itemName;
+		this.quantity = quantity;
+		this.goldDiff = goldDiff;
+		this.transactionTime = transactionTime;
+		this.buyOrSell = buyOrSell;
+	}
+	
+	// ==== GETTERS and SETTERS ====
+	
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public int getGoldDiff() {
+		return goldDiff;
+	}
+
+	public void setGoldDiff(int goldDiff) {
+		this.goldDiff = goldDiff;
+	}
+
+	public long getTransactionTime() {
+		return transactionTime;
+	}
+
+	public void setTransactionTime(long transactionTime) {
+		this.transactionTime = transactionTime;
+	}
+	
+	public boolean isBuyOrSell() {
+		return buyOrSell;
+	}
+	
+	public void setBuyOrSell(boolean buyOrSell) {
+		this.buyOrSell = buyOrSell;
+	}
+	
+	public String toString() {
+		String type = buyOrSell ? "PURCHASE: " : "SALE: ";
+		return type + itemName + " of " + quantity + "# at " + goldDiff + " coins at " + transactionTime + " seconds";
+
+	}
+
+}

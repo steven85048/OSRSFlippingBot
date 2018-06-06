@@ -61,7 +61,7 @@ public class ClientState extends ClientAccessor {
 	public void transactionCompletionHandler() {
 		// Get the updated transactions
 		ArrayList<ActiveTransaction> updatedTransactions = new ArrayList<ActiveTransaction>();
-
+		
 		// get the current active transactions
 		ArrayList<ActiveTransaction> currTransactions = ge.getSlotPurchase();
 
@@ -71,7 +71,7 @@ public class ClientState extends ClientAccessor {
 			boolean match = false;
 
 			ActiveTransaction aTransaction = activeTransactions.get(i);
-
+			
 			for (int j = 0; j < currTransactions.size(); j++) {
 				// Determine if matching
 				ActiveTransaction bTransaction = currTransactions.get(j);
@@ -79,52 +79,52 @@ public class ClientState extends ClientAccessor {
 				// check if match
 				if (transactionMatch(aTransaction, bTransaction)) {
 					match = true;
-
+					
 					// Perform quant diff
 					int quantDiff = Math.abs(aTransaction.getItemQuantityTerm() - bTransaction.getItemQuantityTerm());
 					int priceDiff = Math.abs(aTransaction.getPriceTerm() - bTransaction.getPriceTerm());
-
-					if (transactionHandler(quantDiff, priceDiff, aTransaction)) {
+					
+					if (transactionHandler(quantDiff, priceDiff, aTransaction)){
 						updatedTransactions.add(bTransaction);
 					}
-
+					
 					break;
 				}
 			}
-
+			
 			// if there is no match, that transaction just completed!
 			if (!match) {
 				// Perform quant diff
 				int quantDiff = Math.abs(aTransaction.getItemQuantity() - aTransaction.getItemQuantityTerm());
 				int priceDiff = Math.abs(aTransaction.getItemCost() - aTransaction.getPriceTerm());
-
+				
 				boolean transactionSaved = transactionHandler(quantDiff, priceDiff, aTransaction);
 			}
 		}
-		
-		// Reset the transactions
-		activeTransactions = updatedTransactions;
 	}
 
 	public boolean transactionHandler(int quantDiff, int priceDiff, ActiveTransaction transaction) {
 		// completed transaction object to set
 		CompletedTransaction completedTransaction;
-
+		
 		// Check if the difference has changed
 		if (quantDiff != 0 && priceDiff != 0) {
-			// Generate a completed transaction
-			completedTransaction = new CompletedTransaction(transaction.getItemName(), quantDiff, priceDiff,
-					Timer.getCurrentTime() - transaction.getStartTime(), transaction.isBuyOrSell());
+			// If buy
+			if (transaction.isBuyOrSell()) {
+				completedTransaction = new CompletedTransaction(transaction.getItemName(), quantDiff, priceDiff, Timer.getCurrentTime() - transaction.getStartTime(), transaction.isBuyOrSell());
+				System.out.println("PURCHASE: " + transaction.getItemName() + " of " + quantDiff + "# at " + priceDiff + " coins");
+			} 
+			// If sell
+			else {
+				System.out.println("SALE: " + transaction.getItemName() + " of " + quantDiff + "# at " + priceDiff + " coins");
+			}
 			
-			System.out.println(completedTransaction.toString());
-			
-			// Notify that a completed transaction has occurred
 			return true;
 		}
-
+		
 		return false;
 	}
-
+	
 	// Determines if the two transactions match
 	public boolean transactionMatch(ActiveTransaction aTransaction, ActiveTransaction bTransaction) {
 		if (aTransaction.getItemName().equals(bTransaction.getItemName())

@@ -101,9 +101,6 @@ public class ClientState extends ClientAccessor {
 				boolean transactionSaved = transactionHandler(quantDiff, priceDiff, aTransaction);
 			}
 		}
-		
-		// Reset the transactions
-		activeTransactions = updatedTransactions;
 	}
 
 	public boolean transactionHandler(int quantDiff, int priceDiff, ActiveTransaction transaction) {
@@ -115,10 +112,6 @@ public class ClientState extends ClientAccessor {
 			// Generate a completed transaction
 			completedTransaction = new CompletedTransaction(transaction.getItemName(), quantDiff, priceDiff,
 					Timer.getCurrentTime() - transaction.getStartTime(), transaction.isBuyOrSell());
-			
-			System.out.println(completedTransaction.toString());
-			
-			// Notify that a completed transaction has occurred
 			return true;
 		}
 

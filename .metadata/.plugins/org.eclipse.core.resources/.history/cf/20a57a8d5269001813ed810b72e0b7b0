@@ -1,0 +1,6 @@
+package Transaction;
+
+public class TransactionDetails {
+	
+	public TransactionDetails(String itemId, int quantity, int goldDiff, )
+}

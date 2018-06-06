@@ -1,0 +1,11 @@
+package Transaction;
+
+public class TransactionDetails {
+	
+	private String itemName;
+	private int quantity;
+	private int goldDiff;
+	private int transactionTime;
+	
+
+}
