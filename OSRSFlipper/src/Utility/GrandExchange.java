@@ -98,6 +98,82 @@ public class GrandExchange extends ClientAccessor {
 		}, 100, 20);
 	}
 		
+	public int[] findCompletedTransactionData(ActiveTransaction aTransaction) throws Exception {
+		
+		final int HISTORY_WIDGET = 383;
+		
+		// === HISTORY BUTTON CLICK ===
+		
+		Component historyComponent = ctx.widgets.component(WIDGET, 3).component(9);
+		
+		if (!historyComponent.visible()) {
+			System.out.println("ERR: findCompletedTransactionData history button not found");
+			return null;
+		}
+		
+		// Click the button and validate changed
+		if (!Condition.wait(new Callable<Boolean>() {
+			public Boolean call() {
+				historyComponent.click();
+				return ctx.widgets.component(HISTORY_WIDGET, 3).visible();
+			}
+		}, 1000, 5)) {
+			return null;
+		}
+				
+		// ==== DATA GATHERING ===
+		
+		Component historyContainer = ctx.widgets.component(HISTORY_WIDGET, 3);
+		
+		// only need to check 8 slots max
+		for (int i = 0; i < 8; i++ ){
+			int baseIndex = i * 6; // there are 6 components per slot
+			
+			// == GET BUY OR SELL ==
+			String buySellString = historyContainer.component(baseIndex + 2).text();
+			boolean buyOrSell = true;
+			
+			// We want to find the slot that matches with the passed transaction
+			if (buySellString.contains("Sold")) {
+				buyOrSell = false;
+			} 
+			
+			// == GET ITEM NAME AND QUANTITY ==
+			String nameAndQuantity = historyContainer.component(baseIndex + 3).text();
+			
+			// more bullshit string parsing
+			String[] firstSplit = nameAndQuantity.split(">");
+			
+			String itemName = firstSplit[1].split("<")[0].toLowerCase();
+			int itemQuantity = 0;
+			
+			if (firstSplit.length >= 3)
+				itemQuantity = Integer.parseInt(firstSplit[3].split(" ")[1]);
+			else
+				itemQuantity = 1;
+			
+			// == GET GOLD DIFF ==
+			String goldUse = historyContainer.component(baseIndex + 5).text();
+			
+			// this one's ez
+			int goldDiff = Integer.parseInt(goldUse.split(" ")[0]);
+			
+			// VALIDATE if equal
+			if (aTransaction.getItemName().equals(itemName) && (aTransaction.isBuyOrSell() == buyOrSell) && aTransaction.getItemQuantity() == itemQuantity) {
+				int[] ret = {itemQuantity, goldDiff};
+				if (!exitHistoryWindow())
+					return null;
+				
+				Thread.sleep(750);
+				return ret;
+			}
+		}
+		
+		exitHistoryWindow();
+		return null;
+		
+	}
+	
 	public ArrayList<ActiveTransaction> getSlotPurchase() {
 		
 		final int ITEM_INFO_WIDGET = 465;
@@ -319,6 +395,27 @@ public class GrandExchange extends ClientAccessor {
 // ===========================================================================
 // HELPER FUNCTIONS
 // ===========================================================================
+	
+	public boolean exitHistoryWindow() {
+		Component exchangeComponent = ctx.widgets.component(383, 2).component(9);
+		
+		if (!Condition.wait(new Callable<Boolean>() {
+			public Boolean call() {
+				exchangeComponent.click();
+				return mainWindowOpened();
+			}
+		}, 1000, 5)) {
+			System.out.println("History window exit failed");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void resetGrandExchange() {
+		close();
+		open();
+	}
 	
 	public String getNameFromId(int id) {
 		// load the item name from the cache index

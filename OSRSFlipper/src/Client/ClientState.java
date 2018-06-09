@@ -94,16 +94,21 @@ public class ClientState extends ClientAccessor {
 
 			// if there is no match, that transaction just completed!
 			if (!match) {
-				// Perform quant diff
-				int quantDiff = Math.abs(aTransaction.getItemQuantity() - aTransaction.getItemQuantityTerm());
-				int priceDiff = Math.abs(aTransaction.getItemCost() - aTransaction.getPriceTerm());
-
-				boolean transactionSaved = transactionHandler(quantDiff, priceDiff, aTransaction);
+				// HAVE to look at history for these completed transaction!
+				try {
+					int[] transactionPair = ge.findCompletedTransactionData(aTransaction);
+					boolean transactionSaved = transactionHandler(transactionPair[0], transactionPair[1], aTransaction);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
 		// Reset the transactions
 		activeTransactions = updatedTransactions;
+		
+		// Reset GE just in case
+		ge.resetGrandExchange();
 	}
 
 	public boolean transactionHandler(int quantDiff, int priceDiff, ActiveTransaction transaction) {
@@ -117,6 +122,8 @@ public class ClientState extends ClientAccessor {
 					Timer.getCurrentTime() - transaction.getStartTime(), transaction.isBuyOrSell());
 			
 			System.out.println(completedTransaction.toString());
+			
+			// TODO: Save this transaction to the map
 			
 			// Notify that a completed transaction has occurred
 			return true;
